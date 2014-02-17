@@ -1,5 +1,6 @@
 <?php
 $server = $_POST ['server'];
+$name = $_POST ['name'];
 if (empty ($_POST ['pass'])) $pass = "";
 else $pass = $_POST ['pass'];
 $user = $_POST ['user'];
@@ -18,12 +19,13 @@ while ($fila = mysqli_fetch_array ($resultado)){
   $row = $fila[0];
   $tabla [] = $row;
   echo '<li>
-          <input type="checkbox" name="tabla['.str_replace($prefix,"",$row).']" value="'.$row.'" /> 
+          <input type="checkbox" name="tabla" value="'.$row.'" /> 
           <label>'. str_replace($prefix,"",$row) .'</label>
         </li>';
 }
 echo '</ul>';
 echo '<input type="submit" />';
+echo '<input type="hidden" name="name" value="'.$name.'"/>';
 echo '<input type="hidden" name="server" value="'.$server.'"/>';
 echo '<input type="hidden" name="pass" value="'.$pass.'"/>';
 echo '<input type="hidden" name="user" value="'.$user.'"/>';
