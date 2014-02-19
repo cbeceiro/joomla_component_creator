@@ -1,9 +1,8 @@
 <?php
 if (empty ($_POST ['prefix'])) $prefix = "";
 else $prefix = $_POST ['prefix'];
-global $name;
-global $tabla;
-global $campos;
+include_once 'replace.php';
+include_once 'helpers.php';
 ?>
 
 <br />
@@ -66,203 +65,6 @@ foreach ( $_POST ['requireds'] as $v ){
   $i ++;
 }
 
-
-
-function full_copy ($source, $target) {
-  if (is_dir ($source)){
-    @mkdir ($target);
-    $d = dir ($source);
-    while (FALSE !== ($entry = $d->read ())){
-      if ($entry == '.' || $entry == '..'){
-        continue;
-      }
-      $Entry = $source . '/' . $entry;
-      if (is_dir ($Entry)){
-        full_copy ($Entry, $target . '/' . $entry);
-        continue;
-      }
-      copy ($Entry, $target . '/' . $entry);
-    }
-    $d->close ();
-  }
-  else{
-    copy ($source, $target);
-  }
-}
-
-function singularize($word)
-{
-  $singular = array (
-    '/(quiz)zes$/i' => '\1',
-    '/(matr)ices$/i' => '\1ix',
-    '/(vert|ind)ices$/i' => '\1ex',
-    '/^(ox)en/i' => '\1',
-    '/(alias|status)es$/i' => '\1',
-    '/([octop|vir])i$/i' => '\1us',
-    '/(cris|ax|test)es$/i' => '\1is',
-    '/(shoe)s$/i' => '\1',
-    '/(o)es$/i' => '\1',
-    '/(bus)es$/i' => '\1',
-    '/([m|l])ice$/i' => '\1ouse',
-    '/(x|ch|ss|sh)es$/i' => '\1',
-    '/(m)ovies$/i' => '\1ovie',
-    '/(s)eries$/i' => '\1eries',
-    '/([^aeiouy]|qu)ies$/i' => '\1y',
-    '/([lr])ves$/i' => '\1f',
-    '/(tive)s$/i' => '\1',
-    '/(hive)s$/i' => '\1',
-    '/([^f])ves$/i' => '\1fe',
-    '/(^analy)ses$/i' => '\1sis',
-    '/((a)naly|(b)a|(d)iagno|(p)arenthe|(p)rogno|(s)ynop|(t)he)ses$/i' => '\1\2sis',
-    '/([ti])a$/i' => '\1um',
-    '/(n)ews$/i' => '\1ews',
-    '/s$/i' => '',
-  );
-
-  $uncountable = array('equipment', 'information', 'rice', 'money', 'species', 'series', 'fish', 'sheep');
-
-  $irregular = array(
-    'person' => 'people',
-    'man' => 'men',
-    'child' => 'children',
-    'sex' => 'sexes',
-    'move' => 'moves');
-
-  $lowercased_word = strtolower($word);
-  foreach ($uncountable as $_uncountable){
-    if(substr($lowercased_word,(-1*strlen($_uncountable))) == $_uncountable){
-      return $word;
-    }
-  }
-
-  foreach ($irregular as $_plural=> $_singular){
-    if (preg_match('/('.$_singular.')$/i', $word, $arr)) {
-      return preg_replace('/('.$_singular.')$/i', substr($arr[0],0,1).substr($_plural,1), $word);
-    }
-  }
-
-  foreach ($singular as $rule => $replacement) {
-    if (preg_match($rule, $word)) {
-      return preg_replace($rule, $replacement, $word);
-    }
-  }
-
-  return $word;
-}
-
-function recorreEstructura($dir){
-
-  $directorio=opendir($dir);
-  echo "<b>Directorio actual:</b><br>$dir<br>";
-  echo "<b>Archivos:</b><br>";
-      while ($archivo = readdir($directorio)) {
-        if($archivo == '.' || $archivo == '..');
-        elseif(is_dir("$dir/$archivo"))
-          echo "<a href=\"?dir=$dir/$archivo\">$archivo</a><br>";
-        else echo "$archivo<br>";
-      }
-  closedir($directorio);
-}
-
-function esArchivo($ruta){
-  if(strpos($ruta,'.php') !== false) 
-    return true;
-  elseif(strpos($ruta,'.xml') !== false) 
-    return true;
-  else return false;
-}
-
-function replace($ruta, $name, $tabla, $campos){
-  
-  
-  $com = strtolower ($name);
-  $tab = $tabla;
-  $comUC = ucwords (strtolower ($name));
-  $comu = strtoupper ($name);
-  
-  $camposxml = "";
-  foreach ( $campos as $key => $value ){
-    switch ($value ['jtype']) {
-    	case 'text' :
-    	  $camposxml .= '<field name="' . $value ['field'] . '" type="text" default="' . strtoupper ($value ['default']) . '"
-  	             label="COM_' . strtoupper ($name) . '_FORM_LBL_' . strtoupper ($tabla) . '_' . strtoupper ($value ['field']) . '" readonly="true" class="readonly"
-                 description="JGLOBAL_FIELD_' . strtoupper ($value ['field']) . '_DESC" /> \n';
-    	  break;
-    	default :
-    	  $camposxml = "este es otro tipo de campo";
-    }
-  }
-  
-  $camposstring = "";
-  foreach ( $campos as $v ){
-    $camposstring .= "'" . $v ['field'] . "', 'a." . $v ['field'] . "', \n";
-  }
-  
-  $camposform = "";
-  foreach ( $campos as $v ){
-    $camposform .= '<div class="control-group">
-				<div class="control-label"><?php echo $this->form->getLabel(\'' . $v ['field'] . '\'); ?></div>
-				<div class="controls"><?php echo $this->form->getInput(\'' . $v ['field'] . '\'); ?></div>
-			</div>';
-  }
-  
-  $headers = "";
-  foreach ( $campos as $v ){
-    $headers .= "<th class='left'>
-               <?php echo JHtml::_('grid.sort',  'COM_" . $comu . "_" . strtoupper ($tabla) . "S_" . strtoupper ($v ['field']) . "'
-                      , 'a." . $v ['field'] . "', \$listDirn, \$listOrder); ?>
-               </th>";
-  }
-  
-  $campossql = "";
-  foreach ( $campos as $v ){
-    $campossql .= "`" . $v ['field'] . "` " . $v ['type'] . " " . $v ['null'] . " " . $v ['key'] . " " . $v ['default'] . " " . $v ['extra'] . ", ";
-  }
-
-  
-  $camposshort = "";
-  foreach ( $campos as $v ){
-    $camposshort .= "'a." . $v ['field'] . "' => JText::_('JGRID_HEADING_" . strtoupper ($v ['field']) . "'),";
-  }
-
-  replaceCamposView($ruta, $name, $tabla, $campos);
-  
-  $content = file_get_contents ($ruta);
-  if(strpos($ruta,'.xml')) $content = str_replace ("[CAMPOS]", $camposxml, $content);
-  else $content = str_replace ("[CAMPOS]", $camposstring, $content);
-  $content = str_replace ("[camposshort]", $camposshort, $content);
-  $content = str_replace ("[campossql]", $campossql, $content);
-  $content = str_replace ("[camposform]", $camposform, $content);
-  $content = str_replace ("[headers]", $headers, $content);
-  $content = str_replace ("[com]", $com, $content);
-  $content = str_replace ("[tableU]", ucwords (strtolower (singularize($tabla))), $content);
-  $content = str_replace ("[tableUs]", ucwords (strtolower ($tabla)), $content);
-  $content = str_replace ("[table]", singularize($tabla), $content);
-  $content = str_replace ("[tables]",  $tabla, $content);
-  $content = str_replace ("[tableUP]", strtoupper (singularize($tabla)), $content);
-  $content = str_replace ("[tableUPs]", strtoupper ($tabla), $content);
-  $content = str_replace ("[comu]", $comu, $content);
-  $content = str_replace ("[comUC]", $comUC, $content);
-
-  $content = str_replace ("[tables]",  $tabla, $content);
-  file_put_contents ($ruta, $content);
-}
-
-function replaceCamposView($ruta, $name, $tabla, $campos){
-  /*
-   * <li><?php echo JText::_('COM_GP_FORM_LBL_WINE_ID'); ?>:
-			<?php echo $this->item->id; ?></li>
-   */
-  
-  $aux ="";
-  foreach ($campos as $v){
-    $aux .= '<li><?php echo JText::_(\'COM_'.strtoupper($name).'_FORM_LBL_'.strtoupper(singularize($tabla)).'_'.strtoupper($v['field']).'\'); ?>:
-			<?php echo $this->item->'.$v['field'].'; ?></li>';
-  }
-  $content = file_get_contents ($ruta);
-  $content = str_replace ("[CAMPOS]", $aux, $content);
-  file_put_contents ($ruta, $content);
-}
 
 function replaceAdmin ($name, $tabla, $campos) {
   
@@ -517,13 +319,6 @@ function replaceAdmin ($name, $tabla, $campos) {
   $content = str_replace ("[table]", $tabla, $content);
   $content = str_replace ("[com]", $com, $content);
   file_put_contents ($ruta . 'install.mysql.utf8.sql', $content);
-}
-
-function duplica($source, $dest, $name, $tabla){
-  if (strpos($dest,'view.html.php') !== false || strpos($dest,'default') !== false
-      || strpos($dest,'controller.php') !== false || strpos($dest,'router') !== false)
-    rename($source, $dest);
-  else copy($source, $dest);
 }
 
 function replaceFront($name, $tabla, $campos) {
