@@ -25,7 +25,11 @@ function esArchivo($ruta){
   if(strpos($ruta,'.php') !== false)
     return true;
   elseif(strpos($ruta,'.xml') !== false)
-  return true;
+    return true;
+  elseif(strpos($ruta,'.css') !== false)
+    return true;
+  elseif(strpos($ruta,'.sql') !== false)
+    return true;
   else return false;
 }
 
@@ -104,8 +108,33 @@ function singularize($word)
 }
 
 function duplica($source, $dest, $name, $tabla){
-  if (strpos($dest,'view.html.php') !== false || strpos($dest,'default') !== false
-  || strpos($dest,'controller.php') !== false || strpos($dest,'router') !== false)
-    rename($source, $dest);
+  if (strpos($dest,'view.html.php') !== false  || strpos($dest,'default') !== false
+   || strpos($dest,'controller.php') !== false || strpos($dest,'router') !== false
+   || strpos($dest,'edit.php') !== false       || strpos($dest,'install.mysql.utf8.sql') !== false
+   || strpos($dest,'access.xml') !== false     || strpos($dest,'config.xml') !== false)
+    //rename($source, $dest);
+    ;
   else copy($source, $dest);
+}
+
+function eliminar($ruta){
+  if(strpos($ruta,'controller.php') !== false || strpos($ruta,'router') !== false
+     || strpos($ruta,'install.mysql.utf8.sql') !== false   || strpos($ruta,'access.xml') !== false     
+     || strpos($ruta,'config.xml') !== false)
+    return false;
+  if(!file_exists($ruta)) return false;
+  return true;
+}
+
+function limpiar($rutas){
+  $rutas = array_reverse($rutas);
+  foreach($rutas as $r){
+    if(esArchivo($r) || strpos($r,"index.html") !== false){
+      if(eliminar($r)) unlink($r);
+    }
+    elseif(strpos($r,'/table/') !== false || strpos($r,'/tables/') !== false
+        || strpos($r,'/tmpl/') !== false){
+      rmdir($r);
+    }
+  }
 }
