@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+	<layout title="COM_[comu]_TITLE_LIST_VIEW_[tableUs]" option="View">
+        <message>
+                        <![CDATA[COM_[comu]_TITLE_LIST_VIEW_[tableUs]_DESC]]>
+        </message>
+	</layout>
+</metadata>

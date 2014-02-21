@@ -256,6 +256,8 @@ if (!file_exists ('com_' . $name)) full_copy ("com_plantilla", 'com_' . $name);
 
 replaceAdmin ($name, $tabla, $campos);
 replaceFront ($name, $tabla, $campos);
+rename("com_$name/component.xml","com_$name/$name.xml");
+replace("com_$name/$name.xml",$name,$tabla,$campos);
 
 
 

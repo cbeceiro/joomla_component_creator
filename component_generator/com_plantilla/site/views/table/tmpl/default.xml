@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+    <layout title="COM_[comu]_TITLE_ITEM_VIEW_[table]" option="View">
+        <message>
+                        <![CDATA[COM_[comu]_TITLE_ITEM_VIEW_[table]_DESC]]>
+        </message>
+    </layout>
+    <fields name="params">
+        <fieldset 
+            name="basic"
+            label="COM_[comu]_FIELDSET_ITEM_ID_SELECT_LABEL">
+            <field
+                name="item_id"
+                query="SELECT `id` FROM #__[com]_[tables] ORDER BY `id`"
+                type="sql"
+                key_field="id" 
+                value_field="id"
+                label="COM_[comu]_ITEM_ID_SELECT_LABEL"
+                require="true"
+                description="JGLOBAL_SHOW_TITLE_DESC">
+            </field>
+        </fieldset>
+    </fields>
+</metadata>
