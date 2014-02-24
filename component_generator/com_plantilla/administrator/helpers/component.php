@@ -21,7 +21,7 @@ class [comUC]Helper
 	public static function addSubmenu($vName = '')
 	{
 		JHtmlSidebar::addEntry(
-			JText::_('COM_[comu]_TITLE_[tables]'),
+			JText::_('COM_[comu]_TITLE_[tableUPs]'),
 			'index.php?option=com_[com]&view=[tables]',
 			$vName == '[tables]'
 		);

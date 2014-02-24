@@ -30,6 +30,8 @@ function esArchivo($ruta){
     return true;
   elseif(strpos($ruta,'.sql') !== false)
     return true;
+  elseif(strpos($ruta,'.ini') !== false)
+  return true;
   else return false;
 }
 

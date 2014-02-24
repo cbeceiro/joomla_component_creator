@@ -79,7 +79,11 @@ function replaceAdmin ($name, $tabla, $campos) {
   $rutas [] = "$x/controllers/tables.php";
   $rutas [] = "$x/helpers/";
   $rutas [] = "$x/helpers/component.php";
-  $rutas [] = "$x/language/";
+  $rutas [] = "$x/language/";                             //Añadiendo la parte de las traducciónes Ingles y Español
+  $rutas [] = "$x/language/en-GB.com_component.ini";
+  $rutas [] = "$x/language/en-GB.com_component.sys.ini";
+  $rutas [] = "$x/language/es-ES.com_component.ini";
+  $rutas [] = "$x/language/es-ES.com_component.sys.ini";
   $rutas [] = "$x/models/";
   $rutas [] = "$x/models/fields/";
   $rutas [] = "$x/models/forms/";
@@ -115,7 +119,7 @@ function replaceAdmin ($name, $tabla, $campos) {
     // condiciones para copias de archivos
     if (strpos ($r, 'tables') !== false){
       $rutaOK = str_replace ('tables', $tabla, $r);
-      echo "copiando1 $r     -->     $rutaOK <br />";
+      echo "copiando $r     -->     $rutaOK <br />";
       if (esArchivo ($rutaOK)){
         duplica ($r, $rutaOK, $name, $tabla);
         replace ($rutaOK, $name, $tabla, $campos);
@@ -126,7 +130,7 @@ function replaceAdmin ($name, $tabla, $campos) {
     }
     elseif (strpos ($r, 'table') !== false){
       $rutaOK = str_replace ('table', singularize ($tabla), $r);
-      echo "copiando2 $r     -->     $rutaOK <br />";
+      echo "copiando $r     -->     $rutaOK <br />";
       if (esArchivo ($rutaOK)){
         duplica ($r, $rutaOK, $name, $tabla);
         replace ($rutaOK, $name, $tabla, $campos);
@@ -137,7 +141,7 @@ function replaceAdmin ($name, $tabla, $campos) {
     }
     elseif (strpos ($r, 'tabs') !== false){
       $rutaOK = str_replace ('tabs', 'tables', $r);
-      echo "copiando2 $r     -->     $rutaOK <br />";
+      echo "copiando $r     -->     $rutaOK <br />";
       if (esArchivo ($rutaOK)){
         duplica ($rutaOK, str_replace ('table', singularize ($tabla), $r), $name, $tabla);
         replace ($rutaOK, $name, $tabla, $campos);
@@ -160,7 +164,7 @@ function replaceAdmin ($name, $tabla, $campos) {
     else{
       $rutaOK = $r;
       if (esArchivo ($rutaOK)){
-        echo "copiando $r  to  $rutaOK <br />";
+        echo "copiando $r     -->     $rutaOK <br />";
         // duplica($r, $rutaOK, $name, $tabla);
         replace ($rutaOK, $name, $tabla, $campos);
       }

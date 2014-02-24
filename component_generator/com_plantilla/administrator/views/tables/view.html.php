@@ -55,7 +55,7 @@ class [comUC]View[tableUs] extends JViewLegacy
 		$state	= $this->get('State');
 		$canDo	= [comUC]Helper::getActions($state->get('filter.category_id'));
 
-		JToolBarHelper::title(JText::_('COM_[comu]_TITLE_[tableUP]'), '[table].png');
+		JToolBarHelper::title(JText::_('COM_[comu]_TITLE_[tableUPs]'), '[table].png');
 
         //Check if the form exists before showing the add/edit buttons
         $formPath = JPATH_COMPONENT_ADMINISTRATOR.'/views/[table]';

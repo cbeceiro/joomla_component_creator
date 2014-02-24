@@ -5,29 +5,31 @@ function replace ($ruta, $name, $tabla, $campos) {
   $tab = $tabla;
   $comUC = ucwords (strtolower ($name));
   $comu = strtoupper ($name);
-
+  
   replaceCamposView ($ruta, $name, $tabla, $campos);
   
-  replaceCamposHeaders($ruta, $name, $tabla, $campos);
+  replaceCamposHeaders ($ruta, $name, $tabla, $campos);
   
-  replaceCamposShort($ruta, $name, $tabla, $campos);
+  replaceCamposShort ($ruta, $name, $tabla, $campos);
   
-  replaceCamposSql($ruta, $name, $tabla, $campos);
+  replaceCamposSql ($ruta, $name, $tabla, $campos);
   
-  replaceCamposString($ruta, $name, $tabla, $campos);
+  replaceCamposString ($ruta, $name, $tabla, $campos);
   
-  replaceCamposForm($ruta, $name, $tabla, $campos);
+  replaceCamposForm ($ruta, $name, $tabla, $campos);
   
-  replaceCamposXml($ruta, $name, $tabla, $campos);
+  replaceCamposXml ($ruta, $name, $tabla, $campos);
   
   replaceCamposList ($ruta, $name, $tabla, $campos);
   
   insertPublishedState ($ruta, $name, $tabla, $campos);
   
-  insertCreatedBy($ruta, $name, $tabla, $campos);
+  insertCreatedBy ($ruta, $name, $tabla, $campos);
+  
+  insertLanguage ($ruta, $name, $tabla, $campos);
   
   $content = file_get_contents ($ruta);
-
+  
   $content = str_replace ("[com]", $com, $content);
   $content = str_replace ("[tableU]", ucwords (strtolower (singularize ($tabla))), $content);
   $content = str_replace ("[tableUs]", ucwords (strtolower ($tabla)), $content);
@@ -46,7 +48,7 @@ function replaceCamposShort ($ruta, $name, $tabla, $campos) {
   foreach ( $campos as $v ){
     $camposshort .= "'a." . $v ['field'] . "' => JText::_('JGRID_HEADING_" . strtoupper ($v ['field']) . "'),";
   }
-
+  
   $content = file_get_contents ($ruta);
   $content = str_replace ("[camposshort]", $camposshort, $content);
   file_put_contents ($ruta, $content);
@@ -55,9 +57,9 @@ function replaceCamposShort ($ruta, $name, $tabla, $campos) {
 function replaceCamposSql ($ruta, $name, $tabla, $campos) {
   $campossql = "";
   foreach ( $campos as $v ){
-    if($v['default'] != "") $def = "DEFAULT '".$v['default']."'";
+    if ($v ['default'] != "") $def = "DEFAULT '" . $v ['default'] . "'";
     else $def = "";
-    $campossql .= "`" . $v ['field'] . "` " . $v ['type'] . " " . ($v ['null'] == 'NO' ? "NOT NULL" : "NULL"). " ". $def . ",";
+    $campossql .= "`" . $v ['field'] . "` " . $v ['type'] . " " . ($v ['null'] == 'NO' ? "NOT NULL" : "NULL") . " " . $def . ",";
   }
   
   $content = file_get_contents ($ruta);
@@ -66,34 +68,32 @@ function replaceCamposSql ($ruta, $name, $tabla, $campos) {
 }
 
 function replaceCamposHeaders ($ruta, $name, $tabla, $campos) {
-
   $headers = "";
   foreach ( $campos as $v ){
-    if($v['field'] == 'ordering'){
+    if ($v ['field'] == 'ordering'){
       $headers .= '<th width="1%" class="nowrap center hidden-phone">
 				<?php echo JHtml::_(\'grid.sort\', \'<i class="icon-menu-2"></i>\', \'a.ordering\', 
                 $listDirn, $listOrder, null, \'asc\', \'JGRID_HEADING_ORDERING\'); ?>
 			  </th>';
     }
-    elseif($v['field'] == 'id'){
+    elseif ($v ['field'] == 'id'){
       $headers .= '<th width="1%" class="nowrap center hidden-phone">
 						<?php echo JHtml::_(\'grid.sort\', \'JGRID_HEADING_ID\', \'a.id\', $listDirn, $listOrder); ?>
 					</th>';
     }
-    elseif($v['field'] == 'state' || $v['field'] == 'published'){
+    elseif ($v ['field'] == 'state' || $v ['field'] == 'published'){
       $headers .= '<th width="1%" class="nowrap center">
 						<?php echo JHtml::_(\'grid.sort\', \'JSTATUS\', \'a.state\', $listDirn, $listOrder); ?>
 					</th>';
     }
     else{
       $headers .= "<th class='left'>
-               <?php echo JHtml::_('grid.sort',  'COM_" . strtoupper($name) . "_" . strtoupper ($tabla) . "_" . strtoupper ($v ['field']) . "'
+               <?php echo JHtml::_('grid.sort',  'COM_" . strtoupper ($name) . "_" . strtoupper ($tabla) . "_" . strtoupper ($v ['field']) . "'
                       , 'a." . $v ['field'] . "', \$listDirn, \$listOrder); ?>
                </th>";
     }
-    
   }
-
+  
   $content = file_get_contents ($ruta);
   $content = str_replace ("[headers]", $headers, $content);
   file_put_contents ($ruta, $content);
@@ -102,14 +102,13 @@ function replaceCamposHeaders ($ruta, $name, $tabla, $campos) {
 function replaceCamposForm ($ruta, $name, $tabla, $campos) {
   $camposform = "";
   foreach ( $campos as $v ){
-   
-      $camposform .= '<div class="control-group">
+    
+    $camposform .= '<div class="control-group">
 		      		<div class="control-label"><?php echo $this->form->getLabel(\'' . $v ['field'] . '\'); ?></div>
 				  <div class="controls"><?php echo $this->form->getInput(\'' . $v ['field'] . '\'); ?></div>
 			 </div>';
-    
   }
-
+  
   $content = file_get_contents ($ruta);
   $content = str_replace ("[camposform]", $camposform, $content);
   file_put_contents ($ruta, $content);
@@ -157,31 +156,30 @@ function replaceCamposView ($ruta, $name, $tabla, $campos) {
   file_put_contents ($ruta, $content);
 }
 
-
 function replaceCamposList ($ruta, $name, $tabla, $campos) {
   $aux = "";
   foreach ( $campos as $v ){
-    if($v['field'] == 'title'){
+    if ($v ['field'] == 'title'){
       $aux .= "<?php if (\$canEdit) : ?>
                   <td>
 					<a href=\"<?php echo JRoute::_('index.php?option=com_[com]&task=[table].edit&id='.(int) \$item->id); ?>\">
-	  				<?php echo \$this->escape(\$item->".$v['field']."); ?></a>
+	  				<?php echo \$this->escape(\$item->" . $v ['field'] . "); ?></a>
 		  		<?php else : ?>
-			  		<?php echo \$this->escape(\$item->".$v['field']."); ?>
+			  		<?php echo \$this->escape(\$item->" . $v ['field'] . "); ?>
 				<?php endif; ?>
 				</td>";
     }
-    elseif($v['field'] == 'id'){
+    elseif ($v ['field'] == 'id'){
       $aux .= '<td class="center hidden-phone">
       			<?php echo $item->id; ?>
       		   </td>';
     }
-    elseif($v['field'] == 'state' || $v['field'] == 'published'){
+    elseif ($v ['field'] == 'state' || $v ['field'] == 'published'){
       $aux .= '</td><td class="center">
 						<?php echo JHtml::_(\'jgrid.published\', $item->state, $i, \'[tables].\', $canChange, \'cb\'); ?>
 				</td>';
     }
-    elseif($v['field'] == 'ordering'){
+    elseif ($v ['field'] == 'ordering'){
       $aux .= "<?php if (isset(\$this->items[0]->ordering)): ?>
 					<td class=\"order nowrap center hidden-phone\">
 					<?php
@@ -209,7 +207,7 @@ function replaceCamposList ($ruta, $name, $tabla, $campos) {
     }
     else{
       $aux .= '<td>
-                <?php echo $item->'.$v['field'].'; ?>
+                <?php echo $item->' . $v ['field'] . '; ?>
 			   </td>';
     }
   }
@@ -221,12 +219,12 @@ function replaceCamposList ($ruta, $name, $tabla, $campos) {
 function insertPublishedState ($ruta, $name, $tabla, $campos) {
   $aux = "// No hay estado ";
   foreach ( $campos as $v ){
-    if($v['field'] == 'published' || $v['field'] == 'state'){
+    if ($v ['field'] == 'published' || $v ['field'] == 'state'){
       $aux = "\$published = \$this->getState('filter.state');
                 if (is_numeric(\$published)) {
-                \$query->where('a.".$v['field']." = '.(int) \$published);
+                \$query->where('a." . $v ['field'] . " = '.(int) \$published);
                 } else if (\$published === '') {
-                \$query->where('(a.".$v['field']." IN (0, 1))');
+                \$query->where('(a." . $v ['field'] . " IN (0, 1))');
                 }";
       break;
     }
@@ -239,7 +237,7 @@ function insertPublishedState ($ruta, $name, $tabla, $campos) {
 function insertCreatedBy ($ruta, $name, $tabla, $campos) {
   $aux = "// No hay createdby";
   foreach ( $campos as $v ){
-    if($v['field'] == 'created_by'){
+    if ($v ['field'] == 'created_by'){
       $aux = "// Join over the user field 'created_by'
 		\$query->select('created_by.name AS created_by');
 		\$query->join('LEFT', '#__users AS created_by ON created_by.id = a.created_by');";
@@ -248,5 +246,22 @@ function insertCreatedBy ($ruta, $name, $tabla, $campos) {
   }
   $content = file_get_contents ($ruta);
   $content = str_replace ("[createdby]", $aux, $content);
+  file_put_contents ($ruta, $content);
+}
+
+function insertLanguage ($ruta, $name, $tabla, $campos) {
+  $aux  = 'COM_' . strtoupper ($name) . '_TITLE_' . strtoupper ($tabla) . '="'.$tabla.'"';
+  $aux .= "\n".'COM_' . strtoupper ($name) . '_TITLE_LIST_VIEW_' . strtoupper ($tabla) . ' = "' . $tabla . '"';
+  $aux .= "\n".'COM_' . strtoupper ($name) . '_TITLE_LIST_VIEW_' . strtoupper ($tabla) . '_DESC="Show a list of ' . $tabla . '"';
+  $aux .= "\n".'COM_' . strtoupper ($name) . '_TITLE_ITEM_VIEW_' . strtoupper (singularize ($tabla)) . '= "Single ' . singularize ($tabla) . '"';
+  $aux .= "\n".'COM_' . strtoupper ($name) . '_TITLE_ITEM_VIEW_' . strtoupper (singularize ($tabla)) . '_DESC = "Show a specific ' . singularize ($tabla) .'"';
+  
+  foreach ( $campos as $v ){
+    $aux .= "\n".'COM_' . strtoupper ($name) . '_' . strtoupper ($tabla) . '_' . strtoupper ($v ['field']) . '= "' . strtoupper ($v ['field']) . '"';
+    $aux .= "\n".'COM_' . strtoupper ($name) . '_FORM_LBL_'. strtoupper (singularize ($tabla)) . '_' . strtoupper ($v ['field']) . ' = "' . strtoupper ($v ['field']) . '"';
+    $aux .= "\n".'COM_' . strtoupper ($name) . '_FORM_DESC_' . strtoupper (singularize ($tabla)) . '_' . strtoupper ($v ['field']) . ' = " "';
+  }
+  $content = file_get_contents ($ruta);
+  $content = str_replace ("[language]", $aux, $content);
   file_put_contents ($ruta, $content);
 }

@@ -55,7 +55,7 @@ class [comUC]View[tableU] extends JViewLegacy
         }
 		$canDo		= [comUC]Helper::getActions();
 
-		JToolBarHelper::title(JText::_('COM_[comu]_TITLE_[tableUP]'), '[table].png');
+		JToolBarHelper::title(JText::_('COM_[comu]_TITLE_[tableUPs]'), '[table].png');
 
 		// If not checked out, can save the item.
 		if (!$checkedOut && ($canDo->get('core.edit')||($canDo->get('core.create'))))
